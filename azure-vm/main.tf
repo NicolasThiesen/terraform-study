@@ -55,8 +55,29 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   source_image_reference {
     publisher = "Canonical"
-    offer     = "ubuntu-24_04-lts"
-    sku       = "server"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
     version   = "latest"
   }
+  provisioner "local-exec" {
+    command = "echo ${self.public_ip_address} >> public_it.txt"
+  }
+
+  connection {
+    type = "ssh"
+    user = "terraform"
+    private_key = file("~/.ssh/id_rsa.pub")
+    host = self.public_ip_address
+  }
+
+  provisioner "remote-exec" {
+    inline = [ "echo 'Ola-Mundo' > /tmp/teste.txt" ]
+  }
+
+  provisioner "file" {
+    source = "main.tf"
+    destination = "/tmp/main.tf"
+  }
+  
+  tags = local.common_tags
 }
