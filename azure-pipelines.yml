@@ -4,9 +4,7 @@ pool:
 trigger:
 - main
 variables:
-- group: AWS-Credentials
-- group: Azure-Credentials
-- group: Public-Keys
+- group: AZURE-CREDENTIALS
 
 stages:
 - stage: validate_plan
@@ -58,8 +56,6 @@ stages:
         ARM_TENANT_ID: $(ARM_TENANT_ID)
         ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-        TF_VAR_aws_key_pub: $(TF_VAR_aws_key_pub)
-        TF_VAR_azure_key_pub: $(TF_VAR_azure_key_pub)
 
 - stage: destroy
   displayName: Destroy
@@ -83,5 +79,3 @@ stages:
         ARM_TENANT_ID: $(ARM_TENANT_ID)
         ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-        TF_VAR_aws_key_pub: $(TF_VAR_aws_key_pub)
-        TF_VAR_azure_key_pub: $(TF_VAR_azure_key_pub)
