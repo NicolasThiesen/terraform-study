@@ -37,9 +37,6 @@ stages:
   - job: apply
     displayName: Terraform Apply
     steps:
-    - task: ManualValidation@0
-      timeoutInMinutes: 1440
-      displayName: Approve Apply
     - download: current
       artifact: plan
       displayName: Download Plan
@@ -59,9 +56,6 @@ stages:
   - job: destroy
     displayName: Terraform Destroy
     steps:
-    - task: ManualValidation@0
-      timeoutInMinutes: 1440
-      displayName: Approve Destroy
     - script: |
         terraform init
         terraform destroy -auto-approve
