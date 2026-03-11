@@ -56,9 +56,12 @@ resource "azurerm_linux_virtual_machine" "vm" {
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
+    sku       = "22_04-lts-gen2"
     version   = "latest"
   }
+
+  custom_data = base64encode(file("./script.sh"))
+
   provisioner "local-exec" {
     command = "echo ${self.public_ip_address} >> public_it.txt"
   }
@@ -66,7 +69,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   connection {
     type = "ssh"
     user = "terraform"
-    private_key = file("~/.ssh/id_rsa.pub")
+    private_key = file("~/.ssh/id_rsa")
     host = self.public_ip_address
   }
 

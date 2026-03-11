@@ -1,0 +1,1 @@
+echo "Hello World from custom data" > /tmp/message.txt
