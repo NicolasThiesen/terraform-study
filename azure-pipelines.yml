@@ -1,0 +1,80 @@
+name: 1.0
+pool:
+  vmImage: ubuntu-latest
+trigger:
+- main
+variables:
+- group: AZURE-CREDENTIALS
+
+stages:
+- stage: validate_plan
+  displayName: 'Validate Plan'
+  jobs:
+  - job: validate_plan
+    steps:
+    - script: |
+          echo "Validating terraform plan"
+          sudo apt-get update
+          sudo apt-get install terraform
+          terraform init
+          terraform plan -out plan.out
+      displayName: Terrform Validate & Plan
+      env: 
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
+    - publish: $(Build.SourcesDirectory)/plan.out
+      artifact: plan.out
+      displayName: Publish Plan
+      
+- stage: deploy
+  displayName: 'Deploy Infrastructure'
+  dependsOn: validate_plan
+  jobs:
+  - job: validate_plan
+    pool: server
+    displayName: Approve apply
+    steps:
+    - task: ManualValidation@0
+      timeoutInMinutes: 1440
+  - job: apply
+    displayName: Terraform apply
+    dependsOn: validate_plan
+    steps:
+    - download: current
+      artifact: plan
+      displayName: Download Plan
+    - script: |
+        terraform init
+        terraform apply $(Pipeline.Workspace)/plan/plan.out
+      displayName: Deploy Infrastructure
+      env:
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
+
+- stage: destroy
+  displayName: 'destroy Infrastructure'
+  dependsOn: validate_destroy
+  jobs:
+  - job: validate_destroy
+    pool: server
+    displayName: Approve destroy
+    steps:
+    - task: ManualValidation@0
+      timeoutInMinutes: 1440
+  - job: destroy
+    displayName: Terraform Destroy
+    dependsOn: validate_destroy
+    steps:
+    - script: |
+        terraform init
+        terraform destroy -auto-approve
+      displayName: Destroy Infrastructure
+      env:
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
