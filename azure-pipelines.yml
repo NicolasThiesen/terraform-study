@@ -14,8 +14,7 @@ stages:
     steps:
     - script: |
           echo "Validating terraform plan"
-          sudo apt-get update
-          sudo apt-get install terraform
+          cd azure-vm
           terraform init
           terraform plan -out plan.out
       displayName: Terrform Validate & Plan
@@ -46,6 +45,7 @@ stages:
       artifact: plan
       displayName: Download Plan
     - script: |
+        cd azure-vm
         terraform init
         terraform apply $(Pipeline.Workspace)/plan/plan.out
       displayName: Deploy Infrastructure
@@ -70,6 +70,7 @@ stages:
     dependsOn: validate_destroy
     steps:
     - script: |
+        cd azure-vm
         terraform init
         terraform destroy -auto-approve
       displayName: Destroy Infrastructure
