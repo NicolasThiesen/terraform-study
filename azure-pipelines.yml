@@ -29,7 +29,6 @@ stages:
       
 - stage: deploy
   displayName: 'Deploy Infrastructure'
-  dependsOn: validate_plan
   jobs:
   - job: validate_plan
     pool: server
@@ -57,7 +56,6 @@ stages:
 
 - stage: destroy
   displayName: 'destroy Infrastructure'
-  dependsOn: validate_destroy
   jobs:
   - job: validate_destroy
     pool: server
