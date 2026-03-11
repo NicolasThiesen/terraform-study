@@ -34,16 +34,12 @@ stages:
 - stage: apply
   displayName: Apply
   jobs:
-  - job: approve_apply
-    pool: server
-    displayName: Approve Apply
+  - job: apply
+    displayName: Terraform Apply
     steps:
     - task: ManualValidation@0
       timeoutInMinutes: 1440
-  - job: apply
-    displayName: Terraform Apply
-    dependsOn: approve_apply
-    steps:
+      displayName: Approve Apply
     - download: current
       artifact: plan
       displayName: Download Plan
@@ -60,16 +56,12 @@ stages:
 - stage: destroy
   displayName: Destroy
   jobs:
-  - job: approve_destroy
-    pool: server
-    displayName: Approve Destroy
+  - job: destroy
+    displayName: Terraform Destroy
     steps:
     - task: ManualValidation@0
       timeoutInMinutes: 1440
-  - job: destroy
-    displayName: Terraform Destroy
-    dependsOn: approve_destroy
-    steps:
+      displayName: Approve Destroy
     - script: |
         terraform init
         terraform destroy -auto-approve
