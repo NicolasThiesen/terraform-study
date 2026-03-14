@@ -7,13 +7,14 @@ env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
 
 jobs:
-  terraform_plan:  
+  terraform_apply:  
+    defaults:
+      run:
+        working-directory: ./azure-vnet
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v1
-      - name: Selecting the folder
-        run: cd azure-vnet & pwd & ll
       - name: Terraform Init
         run: terraform init
       - name: Terraform Destroy

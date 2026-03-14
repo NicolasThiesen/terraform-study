@@ -8,12 +8,13 @@ env:
 
 jobs:
   terraform_plan:  
+    defaults:
+      run:
+        working-directory: ./azure-vnet
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v1
-      - name: Selecting the folder
-        run: cd azure-vnet & pwd & ls -la
       - name: Terraform Init
         run: terraform init
       - name: Terraform Validate
