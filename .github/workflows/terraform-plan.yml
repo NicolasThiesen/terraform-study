@@ -12,9 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v1
+      - name: Selecting the folder
+        run: cd azure-vnet
       - name: Terraform Init
         run: terraform init
       - name: Terraform Validate
-        run: terraform Validate
+        run: terraform validate
       - name: Terraform Plan
         run: terraform plan
