@@ -1,4 +1,4 @@
-name: Terraform Apply
+name: Terraform destroy
 on: workflow_dispatch
 env: 
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
@@ -17,5 +17,5 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
       - name: Terraform Init
         run: terraform init
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      - name: Terraform destroy
+        run: terraform destroy -auto-approve
